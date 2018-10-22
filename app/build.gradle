@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.redridgeapps.ktorandroiddemo"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            buildConfigField 'String', "CLIENT_ID", CLIENT_ID
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "CLIENT_ID", CLIENT_ID
+        }
+    }
+
+    sourceSets {
+
+        // To access generated extension -> `AuthResult.jsonAdapter(moshi)`
+        main.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/main")]
+        debug.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/debug")]
+        release.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/release")]
+        test.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/test")]
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    // Jetpack
+    implementation "androidx.appcompat:appcompat:$jetpack_version"
+    implementation "androidx.core:core-ktx:$jetpack_version"
+    implementation "androidx.recyclerview:recyclerview:$jetpack_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+
+    // Moshi
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+
+    // Ktor
+    implementation "io.ktor:ktor-client-android:$ktor_version"
+    implementation "io.ktor:ktor-client-okhttp:$ktor_version"
+    implementation "io.ktor:ktor-client-auth-basic:$ktor_version"
+    implementation "io.ktor:ktor-client-json-jvm:$ktor_version"
+
+    // Chuck
+    debugImplementation "com.readystatesoftware.chuck:library:$chuck_version"
+    releaseImplementation "com.readystatesoftware.chuck:library-no-op:$chuck_version"
+}
